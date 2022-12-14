@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client'
-import aes from 'crypto-js/aes'
+import { crypto } from './crypto'
 
 const socket = io('http://localhost:3000', {
   reconnection: true,
@@ -7,12 +7,11 @@ const socket = io('http://localhost:3000', {
 
 socket.on('connect', () => console.log('connected on the client'))
 
-const encrypted = aes.encrypt('public key', 'pass')
-
-console.log(encrypted.toString())
+const { encryptMessage } = crypto()
+const encryptedMessage = encryptMessage('my message')
 
 setInterval(() => {
   socket.emit('priv message', {
-    idk: encrypted.toString(),
+    idk: encryptedMessage.toString(),
   })
 }, 1000)
